@@ -1,6 +1,7 @@
 # 🎬 Movie Recommendation System
 
-[Space reserved for logo]
+![logo](https://github.com/user-attachments/assets/1d675b97-cdfc-4287-b963-394a84140b3d)
+
 
 Welcome to the **Movie Recommendation System**! This project leverages **machine learning algorithms** to provide personalized movie recommendations based on user preferences and ratings. 📽️🍿
 
@@ -76,9 +77,10 @@ streamlit run app.py
 
 ---
 
-## 🖼️ Screenshots/Demo (Optional)
+## 🖼️ Screenshots/Demo 
 
-![Movie Recommendation System](image.png)
+![MRS](https://github.com/user-attachments/assets/71a1ccd3-ea74-4b05-a022-3c014c8cb5e2)
+
 
 ---
 
