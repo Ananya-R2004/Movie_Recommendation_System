@@ -144,7 +144,6 @@ __pycache__/
 # Ignore image files
 *.jpg
 *.jpeg
-*.png
 
 
 # Ignore logs
