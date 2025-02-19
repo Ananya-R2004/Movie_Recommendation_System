@@ -159,3 +159,4 @@ Data/
 
 MovieRec/smil_lst.pkl
 MovieRec/movies_lst.pkl
+*.ipynb
