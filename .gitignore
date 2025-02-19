@@ -140,6 +140,7 @@ echo "MovieRec/movies_lst.pkl"
 # Ignore compiled Python files
 *.pyc
 __pycache__/
+data/
 
 # Ignore image files
 *.jpg
