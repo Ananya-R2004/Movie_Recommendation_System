@@ -137,3 +137,21 @@ configs/secrets.yaml
 # add your env folder here if its there
 echo "MovieRec/smil_lst.pkl"
 echo "MovieRec/movies_lst.pkl"
+# Ignore compiled Python files
+*.pyc
+__pycache__/
+
+# Ignore image files
+*.jpg
+*.jpeg
+*.png
+
+
+# Ignore logs
+*.log
+
+# Ignore dataset files
+*.json
+
+# Ignore Excel files and logs
+*.xlsx
