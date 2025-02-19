@@ -1,20 +1,20 @@
 import streamlit as st
 from PIL import Image
-import base64
-import pandas as pd
+import os
 import pickle
 import requests
 
-# Define paths
-logo_path = "C:\\Users\\ananya\\Pictures\\MRS\\images\\logo.png"
+# Define paths (Ensure the logo is inside your project folder in GitHub)
+logo_path = os.path.join(os.path.dirname(__file__), "images", "logo.png")
+movies_path = os.path.join("MovieRec", "movies_lst.pkl")
+similars_path = os.path.join("MovieRec", "smil_lst.pkl")
+
+# Load Logo
+logo = Image.open(logo_path)
 
 # Define Colors
-background_color = "#F5F5F5" # Soft bluish-lavender for a clean and appealing look 
+background_color = "#F5F5F5"  # Soft bluish-lavender for a clean and appealing look 
 sidebar_bg_color = "#E0E0E0"  
-# Thistle shade for a modern, sophisticated touch
-# Load Logo
-
-logo = Image.open(logo_path)
 
 # Apply background color to entire page
 page_bg_css = f'''
@@ -30,6 +30,7 @@ page_bg_css = f'''
 '''
 st.markdown(page_bg_css, unsafe_allow_html=True)
 
+# Sidebar Content
 # Sidebar Content
 with st.sidebar:
     st.image(logo, width=120)
@@ -55,47 +56,54 @@ with st.sidebar:
         "This project showcases expertise in data science, machine learning, and user-friendly application design."
     )
 
+# Function to Fetch Movie Poster
 def fetch_poster(movie_id):
-    url = "https://api.themoviedb.org/3/movie/{}?api_key=e84f2ac078ac1ff0ecb39045772f616f&language=en-US".format(movie_id)
-    data = requests.get(url)
-    data = data.json()
-    poster_path = data['poster_path']
-    full_path = "https://image.tmdb.org/t/p/w500/" + poster_path
-    return full_path
+    try:
+        url = f"https://api.themoviedb.org/3/movie/{movie_id}?api_key=e84f2ac078ac1ff0ecb39045772f616f&language=en-US"
+        data = requests.get(url).json()
+        poster_path = data.get("poster_path")
+        if poster_path:
+            return f"https://image.tmdb.org/t/p/w500/{poster_path}"
+    except:
+        pass  # Handle errors silently
+    return "https://via.placeholder.com/500x750.png?text=No+Image"  # Fallback Image
 
+# Load Movie Data
+if os.path.exists(movies_path) and os.path.exists(similars_path):
+    with open(movies_path, "rb") as f:
+        movies = pickle.load(f)
+    with open(similars_path, "rb") as f:
+        sm = pickle.load(f)
+else:
+    st.error("Error: Movie data files not found. Please check the paths.")
+    st.stop()
+
+# Function to Recommend Movies
 def recommend(movie):
     index = movies[movies['title'] == movie].index[0]
     distances = sorted(list(enumerate(sm[index])), reverse=True, key=lambda x: x[1])
+    
     recommended_movie_names = []
     recommended_movie_posters = []
     for idx in distances[:10]:
-        movie_id = movies.iloc[idx[0]]["movie_id"]  # Get top 10 recommendations
+        movie_id = movies.iloc[idx[0]]['movie_id']  # Get top 10 recommendations
         recommended_movie_posters.append(fetch_poster(movie_id))
         recommended_movie_names.append(movies.iloc[idx[0]].title)
+    
+    return recommended_movie_names, recommended_movie_posters
 
-    return recommended_movie_names,recommended_movie_posters
-
+# UI Elements
 st.header("Movie Recommendation System")
-movies=pickle.load(open(r"C:\\Users\\ananya\\Pictures\\MRS\\MovieRec\\movies_lst.pkl","rb"))
-sm=pickle.load(open(r"C:\\Users\\ananya\\Pictures\\MRS\\MovieRec\\smil_lst.pkl","rb"))
+movie_lst = movies["title"].values
+selected_movie = st.selectbox("Type or Select a movie to get recommendations", movie_lst)
 
-movie_lst=movies["title"].values
-selected_movie=st.selectbox(
-    "Type or Select a movie to get Movie Recommendation",
-    movie_lst
-)
-
-if st.button('Show Recommendation'):
-    recommended_movie_names,recommended_movie_posters = recommend(selected_movie)
-    row1 = st.columns(5)
-    row2 = st.columns(5)
+if st.button("Show Recommendation"):
+    recommended_movie_names, recommended_movie_posters = recommend(selected_movie)
     
-    # Fill the first row (first 5 recommendations)
-    for idx, col in enumerate(row1):
-        col.text(recommended_movie_names[idx])
-        col.image(recommended_movie_posters[idx])
-    
-    # Fill the second row (next 5 recommendations)
-    for idx, col in enumerate(row2):
-        col.text(recommended_movie_names[idx + 5])
-        col.image(recommended_movie_posters[idx + 5])
+    # Display movies in 2 rows of 5
+    for i in range(0, 10, 5):
+        cols = st.columns(5)
+        for j, col in enumerate(cols):
+            if i + j < len(recommended_movie_names):
+                col.text(recommended_movie_names[i + j])
+                col.image(recommended_movie_posters[i + j], use_column_width=True)
