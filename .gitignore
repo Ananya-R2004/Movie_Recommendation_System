@@ -156,3 +156,6 @@ Data/
 # Ignore Excel files and logs
 *.xlsx
 *.csv
+
+MovieRec/smil_lst.pkl
+MovieRec/movies_lst.pkl
