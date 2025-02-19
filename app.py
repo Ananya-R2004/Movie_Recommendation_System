@@ -9,10 +9,11 @@ import requests
 logo_path = "C:\\Users\\ananya\\Pictures\\MRS\\images\\logo.png"
 
 # Define Colors
-background_color = "#F5F5F5   "  # Soft bluish-lavender for a clean and appealing look
-sidebar_bg_color = "#E0E0E0   "  # Thistle shade for a modern, sophisticated touch
-
+background_color = "#F5F5F5" # Soft bluish-lavender for a clean and appealing look 
+sidebar_bg_color = "#E0E0E0"  
+# Thistle shade for a modern, sophisticated touch
 # Load Logo
+
 logo = Image.open(logo_path)
 
 # Apply background color to entire page
@@ -67,11 +68,10 @@ def recommend(movie):
     distances = sorted(list(enumerate(sm[index])), reverse=True, key=lambda x: x[1])
     recommended_movie_names = []
     recommended_movie_posters = []
-    for i in distances[0:11]:
-        # fetch the movie poster
-        movie_id = movies.iloc[i[0]].movie_id
+    for idx in distances[:10]:
+        movie_id = movies.iloc[idx[0]]["movie_id"]  # Get top 10 recommendations
         recommended_movie_posters.append(fetch_poster(movie_id))
-        recommended_movie_names.append(movies.iloc[i[0]].title)
+        recommended_movie_names.append(movies.iloc[idx[0]].title)
 
     return recommended_movie_names,recommended_movie_posters
 
