@@ -135,3 +135,5 @@ dmypy.json
 configs/secrets.yaml
 
 # add your env folder here if its there
+echo "MovieRec/smil_lst.pkl"
+echo "MovieRec/movies_lst.pkl"
