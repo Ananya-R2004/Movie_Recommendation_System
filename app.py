@@ -19,18 +19,49 @@ except FileNotFoundError:
 
 custom_css = """
     <style>
+        /* Sidebar Styling */
         [data-testid="stSidebar"] > div:first-child {
             background-color: #DDDDDD;
             padding: 20px;
             border-right: 1px solid #CCCCCC;
         }
 
+        /* Main Background */
         .stApp {
             background-color: #F4F4F4;
+        }
+
+        /* Button Styling */
+        div.stButton > button {
+            background-color: white !important;
+            color: black !important;
+            border: 1px solid #999999 !important;
+            padding: 0.5em 1em;
+            font-weight: bold;
+            border-radius: 6px;
+        }
+        div.stButton > button:hover {
+            background-color: #A8A8A8 !important;
+            border: 1px solid #666666 !important;
+        }
+
+        /* Footer Styling */
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: #f0f0f0;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 14px;
+            color: #333333;
+            border-top: 1px solid #cccccc;
         }
     </style>
 """
 st.markdown(custom_css, unsafe_allow_html=True)
+
 
 # Sidebar Content
 with st.sidebar:
@@ -146,3 +177,13 @@ if st.button("Show Recommendation"):
                     col.image(recommended_movie_posters[i + j], use_column_width=True)
     else:
         st.warning("No recommendations found.")
+
+# --- Footer ---
+st.markdown(
+    """
+    <div class="footer">
+             Developed by Ananya R | Data from <a href="https://www.themoviedb.org/" target="_blank">TMDB</a>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
