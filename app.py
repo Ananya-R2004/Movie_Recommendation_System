@@ -5,53 +5,34 @@ import pickle
 import requests
 import gzip
 
-# Define paths (Ensure the logo is inside your project folder in GitHub)
+# Define paths
 logo_path = os.path.join(os.path.dirname(__file__), "images", "logo.png")
 movies_path = os.path.join("MovieRec", "movies_lst_compressed.pkl.gz")
 similars_path = os.path.join("MovieRec", "smil_lst_compressed.pkl.gz")
 
-# Load Logo with a fallback
+# Load logo if available
 try:
     logo = Image.open(logo_path)
 except FileNotFoundError:
     logo = None
-
-# Define Colors
-background_color = "#F5F5F5"  # Soft bluish-lavender for a clean and appealing look 
-sidebar_bg_color = "#E0E0E0"  
-
-# Apply background color to entire page
-page_bg_css = f'''
-    <style>
-        .stApp {{
-            background-color: {background_color};
-        }}
-        [data-testid="stSidebar"] > div:first-child {{
-            background-color: {sidebar_bg_color};
-            padding: 20px;
-        }}
-    </style>
-'''
-st.markdown(page_bg_css, unsafe_allow_html=True)
 
 # Sidebar Content
 with st.sidebar:
     if logo:
         st.image(logo, width=120)
     st.markdown("""
-    ## Ananya Rajesh
+    ## Ananya R
     **Aspiring Data Scientist | AI & ML Enthusiast**  
     Passionate about uncovering insights through data and building intelligent systems.  
     
     🎓 Pursuing Data Science Engineering  
     📍 India  
-    📧 [Email](mailto:ananyarajesh2112@gmail.com)
+    📧 [Email](mailto:ananyarajesh2112@gmail.com)  
     🌐 [GitHub](https://github.com/Ananya-R2004)  
-    🌐 [LinkedIn](https://www.linkedin.com/in/ananya-r-a7b57b2a4) 
+    🌐 [LinkedIn](https://www.linkedin.com/in/ananya-r-a7b57b2a4)
     """, unsafe_allow_html=True)
     
-    st.markdown("""---""")  # Separator
-    
+    st.markdown("---")
     st.write("**About this Project:**")
     st.write(
         "This **Movie Recommendation System** helps users discover movies based on their interests. "
@@ -59,7 +40,7 @@ with st.sidebar:
         "This project showcases expertise in data science, machine learning, and user-friendly application design."
     )
 
-# Function to Fetch Movie Poster
+# Function to Fetch Poster
 def fetch_poster(movie_id):
     api_key = "e84f2ac078ac1ff0ecb39045772f616f"
     try:
@@ -69,10 +50,10 @@ def fetch_poster(movie_id):
         if poster_path:
             return f"https://image.tmdb.org/t/p/w500/{poster_path}"
     except:
-        pass  # Handle errors silently
-    return "https://via.placeholder.com/500x750.png?text=No+Image"  # Fallback Image
+        pass
+    return "https://via.placeholder.com/500x750.png?text=No+Image"
 
-# Load Movie Data with Error Handling
+# Load Movie Data
 if os.path.exists(movies_path) and os.path.exists(similars_path):
     try:
         with gzip.open(movies_path, 'rb') as f:
@@ -86,7 +67,7 @@ else:
     st.error("Error: Movie data files not found. Please check the paths.")
     st.stop()
 
-# Function to Recommend Movies
+# Recommendation Logic
 def recommend(movie):
     try:
         index = movies[movies['title'] == movie].index[0]
@@ -94,7 +75,7 @@ def recommend(movie):
         
         recommended_movie_names = []
         recommended_movie_posters = []
-        for idx in distances[1:11]:  # Skip the first as it's the same movie
+        for idx in distances[1:11]:
             movie_id = movies.iloc[idx[0]]['movie_id']
             recommended_movie_posters.append(fetch_poster(movie_id))
             recommended_movie_names.append(movies.iloc[idx[0]].title)
@@ -104,15 +85,35 @@ def recommend(movie):
         st.error("Selected movie not found. Please choose another.")
         return [], []
 
-# UI Elements
-st.header("Movie Recommendation System")
+# Main Interface
+st.markdown("<h1 style='font-size: 40px;'>Movie Recommendation System</h1>", unsafe_allow_html=True)
+st.markdown("Type or Select a movie to get Movie Recommendation")
+
 movie_lst = movies["title"].values
-selected_movie = st.selectbox("Type or Select a movie to get recommendations", movie_lst)
+selected_movie = st.selectbox("", movie_lst)
+
+# Button Styling (white background, black border)
+button_css = """
+    <style>
+        div.stButton > button {
+            background-color: white !important;
+            color: black !important;
+            border: 1px solid #999999 !important;
+            padding: 0.5em 1em;
+            font-weight: bold;
+            border-radius: 6px;
+        }
+        div.stButton > button:hover {
+            background-color: #f0f0f0 !important;
+            border: 1px solid #666666 !important;
+        }
+    </style>
+"""
+st.markdown(button_css, unsafe_allow_html=True)
 
 if st.button("Show Recommendation"):
     recommended_movie_names, recommended_movie_posters = recommend(selected_movie)
     
-    # Display movies in 2 rows of 5
     if recommended_movie_names:
         for i in range(0, len(recommended_movie_names), 5):
             cols = st.columns(5)
