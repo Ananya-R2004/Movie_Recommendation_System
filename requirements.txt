@@ -1,3 +1,6 @@
 streamlit
-
--e.
+pandas
+Pillow
+requests
+numpy
+scikit-learn
