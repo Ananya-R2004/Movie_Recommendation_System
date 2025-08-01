@@ -24,6 +24,24 @@ custom_css = """
             background-color: #DDDDDD;
             padding: 20px;
             border-right: 1px solid #CCCCCC;
+            display: flex; /* Use flexbox for vertical arrangement */
+            flex-direction: column; /* Stack items vertically */
+            align-items: center; /* Center items horizontally within the flex container */
+        }
+
+        /* Adjust Streamlit image element within sidebar */
+        [data-testid="stSidebar"] .stImage {
+            display: block; /* Make the image a block element */
+            margin-left: auto; /* Auto margins for horizontal centering */
+            margin-right: auto; /* Auto margins for horizontal centering */
+            width: 50px; /* Explicitly set image width here if use_container_width is causing issues */
+        }
+
+        /* Center text content within sidebar's markdown and text blocks */
+        [data-testid="stSidebar"] .stMarkdown,
+        [data-testid="stSidebar"] .stText {
+            width: 100%; /* Ensure they take full width for text-align to work */
+            text-align:left ; /* Center the text inside these blocks */
         }
 
         /* Main Background */
@@ -63,21 +81,34 @@ custom_css = """
 st.markdown(custom_css, unsafe_allow_html=True)
 
 
+# Determine which image sizing parameter to use based on environment
+# Streamlit Cloud is typically on a newer version that prefers use_container_width
+# Local environments might be older and require use_column_width
+image_sizing_param = "use_container_width" if os.environ.get("STREAMLIT_SERVER_PORT") else "use_column_width"
+
+
 # Sidebar Content
 with st.sidebar:
     if logo:
-        st.image(logo, width=120)
-    st.markdown("""
-    ## Ananya R
+     st.image(logo, width=120, use_column_width=True)
+
+    st.markdown(
+    """
+    ## Ananya R  
     **Aspiring Data Scientist | AI & ML Enthusiast**  
-    Passionate about uncovering insights through data and building intelligent systems.  
-    
-    🎓 Pursuing Data Science Engineering  
-    📍 India  
+    Passionate about uncovering insights through data and building intelligent systems.
+
+    ---
+
+    🎓 **Pursuing:** Data Science Engineering  
+    📍 **Location:** India  
     📧 [Email](mailto:ananyarajesh2112@gmail.com)  
     🌐 [GitHub](https://github.com/Ananya-R2004)  
-    🌐 [LinkedIn](https://www.linkedin.com/in/ananya-r-a7b57b2a4)
-    """, unsafe_allow_html=True)
+    🔗 [LinkedIn](https://www.linkedin.com/in/ananya-r-a7b57b2a4)
+    """,
+    unsafe_allow_html=True
+)
+
 
     st.markdown("---")
     st.write("**About this Project:**")
@@ -89,7 +120,7 @@ with st.sidebar:
 
     st.markdown("""
     ---
-    📝 [Medium](https://medium.com/@ananyarajesh2112)  
+    📝 [Medium](https://medium.com/@ananyarajesh2112) 
     *Explore my technical journey & project documentation here.*
     """, unsafe_allow_html=True)
 
@@ -174,7 +205,7 @@ if st.button("Show Recommendation"):
             for j, col in enumerate(cols):
                 if i + j < len(recommended_movie_names):
                     col.text(recommended_movie_names[i + j])
-                    col.image(recommended_movie_posters[i + j], use_column_width=True)
+                    col.image(recommended_movie_posters[i + j], **{image_sizing_param: True})
     else:
         st.warning("No recommendations found.")
 
@@ -182,7 +213,7 @@ if st.button("Show Recommendation"):
 st.markdown(
     """
     <div class="footer">
-             Developed by Ananya R | Data from <a href="https://www.themoviedb.org/" target="_blank">TMDB</a>
+        Developed by Ananya R | Data from <a href="https://www.themoviedb.org/" target="_blank">TMDB</a>
     </div>
     """,
     unsafe_allow_html=True
