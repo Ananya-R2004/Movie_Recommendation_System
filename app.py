@@ -16,6 +16,22 @@ try:
 except FileNotFoundError:
     logo = None
 
+# --- Sidebar and App Background Styling ---
+custom_css = """
+    <style>
+        [data-testid="stSidebar"] > div:first-child {
+            background-color: #DDDDDD;
+            padding: 20px;
+            border-right: 1px solid #CCCCCC;
+        }
+
+        .stApp {
+            background-color: #F4F4F4;
+        }
+    </style>
+"""
+st.markdown(custom_css, unsafe_allow_html=True)
+
 # Sidebar Content
 with st.sidebar:
     if logo:
@@ -31,7 +47,7 @@ with st.sidebar:
     🌐 [GitHub](https://github.com/Ananya-R2004)  
     🌐 [LinkedIn](https://www.linkedin.com/in/ananya-r-a7b57b2a4)
     """, unsafe_allow_html=True)
-    
+
     st.markdown("---")
     st.write("**About this Project:**")
     st.write(
@@ -39,6 +55,12 @@ with st.sidebar:
         "Using cutting-edge recommendation algorithms, it suggests similar movies tailored to your taste. "
         "This project showcases expertise in data science, machine learning, and user-friendly application design."
     )
+
+    st.markdown("""
+    ---
+    📝 [Medium](https://medium.com/@ananyarajesh2112)  
+    *Explore my technical journey & project documentation here.*
+    """, unsafe_allow_html=True)
 
 # Function to Fetch Poster
 def fetch_poster(movie_id):
@@ -72,14 +94,14 @@ def recommend(movie):
     try:
         index = movies[movies['title'] == movie].index[0]
         distances = sorted(list(enumerate(sm[index])), reverse=True, key=lambda x: x[1])
-        
+
         recommended_movie_names = []
         recommended_movie_posters = []
         for idx in distances[1:11]:
             movie_id = movies.iloc[idx[0]]['movie_id']
             recommended_movie_posters.append(fetch_poster(movie_id))
             recommended_movie_names.append(movies.iloc[idx[0]].title)
-        
+
         return recommended_movie_names, recommended_movie_posters
     except IndexError:
         st.error("Selected movie not found. Please choose another.")
@@ -104,16 +126,17 @@ button_css = """
             border-radius: 6px;
         }
         div.stButton > button:hover {
-            background-color: #f0f0f0 !important;
+            background-color: #A8A8A8 !important;
             border: 1px solid #666666 !important;
         }
     </style>
 """
 st.markdown(button_css, unsafe_allow_html=True)
 
+# Show Recommendations
 if st.button("Show Recommendation"):
     recommended_movie_names, recommended_movie_posters = recommend(selected_movie)
-    
+
     if recommended_movie_names:
         for i in range(0, len(recommended_movie_names), 5):
             cols = st.columns(5)
