@@ -95,7 +95,7 @@ with st.sidebar:
 
 # Function to Fetch Poster
 def fetch_poster(movie_id):
-    api_key = "e84f2ac078ac1ff0ecb39045772f616f"
+    api_key = st.secrets["TMDB_API_KEY"]
     try:
         url = f"https://api.themoviedb.org/3/movie/{movie_id}?api_key={api_key}&language=en-US"
         data = requests.get(url).json()
