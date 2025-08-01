@@ -16,7 +16,7 @@ try:
 except FileNotFoundError:
     logo = None
 
-# --- Sidebar and App Background Styling ---
+
 custom_css = """
     <style>
         [data-testid="stSidebar"] > div:first-child {
